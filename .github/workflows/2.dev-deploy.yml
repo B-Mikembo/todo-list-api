@@ -1,0 +1,38 @@
+name: "deploy to dev"
+
+on:
+  pull_request:
+    types: [ closed ]
+    branches: [ develop ]
+
+env:
+  IMAGE_REGISTRY: bricekm/todo-list-api-dev
+
+jobs:
+  dev-deploy:
+    runs-on: ubuntu-latest
+    environment: dev
+
+    if: github.event.pull_request.merged == true
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'gradle'
+      - name: Sets variable
+        id: variables
+        run: |
+          IMAGE_TAG=dev-${{ github.run_number }}
+          echo "IMAGE_REGISTRY=$IMAGE_REGISTRY" >> $GITHUB_ENV
+          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+      - name: Print variables
+        run: |
+          echo "IMAGE_TAG=$IMAGE_TAG"
+          echo "IMAGE_REGISTRY=$IMAGE_REGISTRY"
+      - name: Build image
+        run: ./gradlew clean assemble -x test bootBuildImage --console=plain -Pspring-boot.build-image.imageName=$IMAGE_REGISTRY:$IMAGE_TAG
+      - name: Push image
+        run: docker push $IMAGE_REGISTRY:$IMAGE_TAG
