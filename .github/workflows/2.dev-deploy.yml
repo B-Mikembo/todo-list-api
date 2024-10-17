@@ -6,7 +6,12 @@ on:
     branches: [ develop ]
 
 env:
-  IMAGE_REGISTRY: bricekm/todo-list-api-dev
+  DOCKER_IMAGE: bricekm/todo-list-api-dev
+  IMAGE_TARBALL_FILENAME: todo-list-api-dev-docker-image.tar
+  DOCKER_USER: bricekm
+  DOCKER_PASS: ${{ secrets.DOCKER_PASSWORD }}
+  UPLOAD_NAME: docker-artifact
+  UPLOAD_PATH: artifacts
 
 jobs:
   dev-deploy:
@@ -16,23 +21,10 @@ jobs:
     if: github.event.pull_request.merged == true
     steps:
       - uses: actions/checkout@v4
-      - name: Set up JDK
-        uses: actions/setup-java@v4
+      - uses: actions/download-artifact@v4
         with:
-          distribution: 'temurin'
-          java-version: '21'
-          cache: 'gradle'
-      - name: Sets variable
-        id: variables
-        run: |
-          IMAGE_TAG=dev-${{ github.run_number }}
-          echo "IMAGE_REGISTRY=$IMAGE_REGISTRY" >> $GITHUB_ENV
-          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
-      - name: Print variables
-        run: |
-          echo "IMAGE_TAG=$IMAGE_TAG"
-          echo "IMAGE_REGISTRY=$IMAGE_REGISTRY"
-      - name: Build image
-        run: ./gradlew clean assemble -x test bootBuildImage --console=plain -Pspring-boot.build-image.imageName=$IMAGE_REGISTRY:$IMAGE_TAG
-      - name: Push image
-        run: docker push $IMAGE_REGISTRY:$IMAGE_TAG
+          name: ${{ env.UPLOAD_NAME }}
+          path: ${{ env.UPLOAD_PATH }}
+      - run: docker load < $UPLOAD_PATH/$IMAGE_TARBALL_FILENAME
+      - name: Deploying image to public Docker Hub
+        run: .github/workflows/docker_push.sh

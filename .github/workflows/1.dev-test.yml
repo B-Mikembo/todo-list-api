@@ -22,3 +22,21 @@ jobs:
           cache: 'gradle'
       - name: Run Tests
         run: ./gradlew clean check --console=plain
+  docker-build:
+    runs-on: ubuntu-latest
+    env:
+      DOCKER_IMAGE: bricekm/todo-list-api-dev
+      IMAGE_TARBALL_FILENAME: todo-list-api-dev-docker-image.tar
+      UPLOAD_PATH: artifacts
+      UPLOAD_NAME: docker-artifact
+    steps:
+      - uses: actions/checkout@v4
+      - name: Building Docker image
+        run: .github/workflows/docker_build.sh "${{ github.event.commits[0].message }}"
+      - run: mkdir -p $UPLOAD_PATH
+      - run: docker save $DOCKER_IMAGE:$GITHUB_SHA >$UPLOAD_PATH/$IMAGE_TARBALL_FILENAME
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.UPLOAD_NAME }}
+          path: ${{ env.UPLOAD_PATH }}
+          retention-days: 1
