@@ -1,0 +1,24 @@
+name: "run-tests"
+
+on:
+  pull_request:
+    types: [ opened, synchronize, reopened ]
+    branches: [ develop ]
+
+concurrency:
+  group: ci-dev-test-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dev-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'gradle'
+      - name: Run Tests
+        run: ./gradlew clean check --console=plain
