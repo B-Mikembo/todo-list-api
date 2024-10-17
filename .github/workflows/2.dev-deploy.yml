@@ -6,12 +6,19 @@ on:
     branches: [ develop ]
 
 env:
-  IMAGE_REGISTRY: bricekm/todo-list-api-dev
+  IMAGE_REGISTRY: todo-list-api
+
+concurrency:
+  group: ci-deploy-dev-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   dev-deploy:
     runs-on: ubuntu-latest
     environment: dev
+    permissions:
+      contents: 'read'
+      id-token: 'write'
 
     if: github.event.pull_request.merged == true
     steps:
@@ -22,17 +29,26 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
           cache: 'gradle'
+
       - name: Sets variable
         id: variables
         run: |
+          IMAGE_REGISTRY="docker.io/${{ secrets.DOCKER_USERNAME }}/${{ IMAGE_NAME }}
           IMAGE_TAG=dev-${{ github.run_number }}
+          
           echo "IMAGE_REGISTRY=$IMAGE_REGISTRY" >> $GITHUB_ENV
           echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+
       - name: Print variables
         run: |
           echo "IMAGE_TAG=$IMAGE_TAG"
           echo "IMAGE_REGISTRY=$IMAGE_REGISTRY"
+
+      - name: Log in to Docker Hub
+        run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+
       - name: Build image
-        run: ./gradlew clean assemble -x test bootBuildImage --console=plain -Pspring-boot.build-image.imageName=$IMAGE_REGISTRY:$IMAGE_TAG
+        run: ./gradlew clean bootBuildImage --imageName=$IMAGE_REGISTRY:$IMAGE_TAG
+
       - name: Push image
         run: docker push $IMAGE_REGISTRY:$IMAGE_TAG
