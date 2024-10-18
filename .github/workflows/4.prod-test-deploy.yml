@@ -112,11 +112,14 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
 
+<<<<<<< HEAD
+=======
       - name: Configure Git user
         run: |
           git config --global user.name "GitHub Actions Bot"
           git config --global user.email "actions@github.com"
 
+>>>>>>> main
       # 2. Create release
       - name: Create release
         env:
