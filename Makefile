@@ -3,3 +3,5 @@ SHELL := /bin/bash
 
 release: ## create release
 	./scripts/create_release.sh
+hotfix: ## create hotfix
+	./scripts/create_hotfix.sh
