@@ -1,1 +1,3 @@
 rootProject.name = 'todo-list-api'
+include 'todo-list-api-application'
+
