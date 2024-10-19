@@ -1,19 +1,18 @@
 plugins {
     id 'java'
-}
-
-group = 'com.github.brice'
-version = '0.0.1-SNAPSHOT'
-
-repositories {
-    mavenCentral()
+    id 'jvm-test-suite'
+    id "java-test-fixtures"
 }
 
 dependencies {
-    testImplementation platform('org.junit:junit-bom:5.10.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.2'
+    testImplementation 'org.assertj:assertj-core:3.26.3'
 }
 
-test {
-    useJUnitPlatform()
+testing {
+    suites {
+        test {
+            useJUnitJupiter()
+        }
+    }
 }
