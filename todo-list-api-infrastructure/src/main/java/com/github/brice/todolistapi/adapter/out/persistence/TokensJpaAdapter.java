@@ -43,7 +43,7 @@ public class TokensJpaAdapter implements Tokens {
 
     private Map<String, String> generateJwt(UserDetails userDetails) {
         var currentTime = System.currentTimeMillis();
-        var expirationTime = currentTime + 30 * 60 * 1000;
+        var expirationTime = currentTime + 5 * 60 * 1000;
         var claims = Map.of(
                 Claims.EXPIRATION, new Date(expirationTime),
                 Claims.SUBJECT, userDetails.getUsername()
