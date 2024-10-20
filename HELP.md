@@ -1,7 +1,7 @@
 # Read Me First
 The following was discovered as part of building this project:
 
-* The original package name 'com.github.brice.todo-list-api' is invalid and this project uses 'com.github.brice.todo_list_api' instead.
+* The original package name 'com.github.brice.todo-list-api' is invalid and this project uses 'com.github.brice.todolistapi' instead.
 
 # Getting Started
 
