@@ -9,4 +9,8 @@ public record User(
     public User(String password, String name, String email) {
         this(null, password, name, email);
     }
+
+    public User(String email, String password) {
+        this(null, password, null, email);
+    }
 }

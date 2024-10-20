@@ -1,5 +1,7 @@
 package com.github.brice.todolistapi.security;
 
+import com.github.brice.todolistapi.application.in.HandlingToken;
+import com.github.brice.todolistapi.application.token.Token;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,23 +17,25 @@ import java.io.IOException;
 @Component
 public class JwtFilter extends OncePerRequestFilter {
     private UserDetailsService userDetailsService;
-    private JwtService jwtService;
+    private HandlingToken handlingToken;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = null;
-        String username = null;
+        Token domainToken = null;
+        String email = null;
         boolean isTokenExpired = true;
 
         var authorization = request.getHeader("Authorization");
         if (authorization != null && authorization.startsWith("Bearer ")) {
             token = authorization.substring(7);
-            isTokenExpired = jwtService.isTokenExpired(token);
-            username = jwtService.extractUsername(token);
+            domainToken = handlingToken.getTokenByValue(token);
+            isTokenExpired = handlingToken.isTokenExpired(token);
+            email = handlingToken.extractEmail(token);
         }
 
-        if (!isTokenExpired && username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            var userDetails = userDetailsService.loadUserByUsername(username);
+        if (!isTokenExpired && domainToken.user().email().equals(email) && SecurityContextHolder.getContext().getAuthentication() == null) {
+            var userDetails = userDetailsService.loadUserByUsername(email);
             var authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         }
