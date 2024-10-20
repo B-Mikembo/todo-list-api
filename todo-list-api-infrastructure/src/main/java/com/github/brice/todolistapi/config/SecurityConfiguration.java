@@ -38,8 +38,8 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(
                         authorize ->
                                 authorize
-                                        .requestMatchers(POST, "/sign-up").permitAll()
-                                        .requestMatchers(POST, "/sign-in").permitAll()
+                                        .requestMatchers("/h2-console").permitAll()
+                                        .requestMatchers(POST, "/register").permitAll()
                                         .anyRequest().authenticated()
                 )
                 .sessionManagement(httpSecuritySessionManagementConfigurer ->
