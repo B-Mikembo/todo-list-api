@@ -4,6 +4,7 @@ import com.github.brice.todolistapi.adapter.out.persistence.entity.UserEntity;
 import com.github.brice.todolistapi.application.out.UserNotFound;
 import com.github.brice.todolistapi.application.out.Users;
 import com.github.brice.todolistapi.application.user.User;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -41,5 +42,11 @@ public class UsersJpaAdapter implements UserDetailsService, Users {
                 user.email()
         );
         return userJpaRepository.save(UserEntity.fromDomain(userToRegister)).toDomain();
+    }
+
+    @Override
+    public User findCurrentUser() {
+        var userEntity = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return userEntity.toDomain();
     }
 }
