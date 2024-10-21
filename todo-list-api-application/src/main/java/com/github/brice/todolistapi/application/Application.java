@@ -21,12 +21,12 @@ public class Application implements HandlingToken {
 
     @Override
     public Token getTokenByValue(String value) {
-        return null;
+        return tokens.findByValue(value);
     }
 
     @Override
     public String extractEmail(String token) {
-        return "";
+        return tokens.findEmailInToken(token);
     }
 
     @Override

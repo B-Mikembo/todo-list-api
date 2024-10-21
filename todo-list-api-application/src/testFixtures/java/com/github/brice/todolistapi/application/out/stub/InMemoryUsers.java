@@ -1,6 +1,5 @@
 package com.github.brice.todolistapi.application.out.stub;
 
-import com.github.brice.todolistapi.application.out.UserNotFound;
 import com.github.brice.todolistapi.application.out.Users;
 import com.github.brice.todolistapi.application.user.User;
 
@@ -34,5 +33,10 @@ public class InMemoryUsers implements Users {
         }
         var lastId = entities.keySet().stream().sorted(Long::compareTo).findFirst().get();
         return lastId + 1;
+    }
+
+    @Override
+    public User findCurrentUser() {
+        return entities.values().stream().findFirst().get();
     }
 }

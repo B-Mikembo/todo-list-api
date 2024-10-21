@@ -16,8 +16,13 @@ import java.io.IOException;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
-    private UserDetailsService userDetailsService;
-    private HandlingToken handlingToken;
+    private final UserDetailsService userDetailsService;
+    private final HandlingToken handlingToken;
+
+    public JwtFilter(UserDetailsService userDetailsService, HandlingToken handlingToken) {
+        this.userDetailsService = userDetailsService;
+        this.handlingToken = handlingToken;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
