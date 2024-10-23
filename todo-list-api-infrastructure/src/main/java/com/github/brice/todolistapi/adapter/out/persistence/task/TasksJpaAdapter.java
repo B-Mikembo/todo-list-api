@@ -34,4 +34,9 @@ public class TasksJpaAdapter implements Tasks {
                 .map(TaskEntity::toDomain)
                 .orElseThrow(() -> new TaskNotFound("Cannot find task with id: " + id));
     }
+
+    @Override
+    public void deleteById(Long id) {
+        taskJpaRepository.deleteById(id);
+    }
 }
