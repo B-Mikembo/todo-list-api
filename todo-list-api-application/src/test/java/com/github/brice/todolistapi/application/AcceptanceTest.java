@@ -2,6 +2,7 @@ package com.github.brice.todolistapi.application;
 
 import com.github.brice.todolistapi.application.in.ManagingTask;
 import com.github.brice.todolistapi.application.in.UserService;
+import com.github.brice.todolistapi.application.out.TaskNotFound;
 import com.github.brice.todolistapi.application.out.Tasks;
 import com.github.brice.todolistapi.application.out.Users;
 import com.github.brice.todolistapi.application.out.stub.InMemoryTasks;
@@ -66,5 +67,41 @@ class AcceptanceTest {
         var task = new Task("title", "description");
         authenticatedUser.createTask(task);
         assertThatThrownBy(() -> authenticatedUser.createTask(task)).isInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    void customerCanUpdateTask() {
+        var currentUser = new User("current.user@gmail.com", "current-password");
+        userService.register(currentUser);
+        var buyMilkTask = new Task("Buy milk", "cow milk");
+        var buyEggsTask = new Task("Buy Eggs", "chicken eggs");
+        var task = authenticatedUser.createTask(buyMilkTask);
+        var updatedTask = authenticatedUser.updateTask(task.id(), buyEggsTask);
+        assertThat(updatedTask).isNotNull();
+        assertThat(updatedTask.title()).isEqualTo("Buy Eggs");
+        assertThat(updatedTask.description()).isEqualTo("chicken eggs");
+    }
+
+    @Test
+    void customerCannotUpdateNoExistingTask() {
+        var currentUser = new User("current.user@gmail.com", "current-password");
+        userService.register(currentUser);
+        assertThatThrownBy(() -> authenticatedUser.updateTask(1L, new Task("new title", "new description"))).isInstanceOf(TaskNotFound.class);
+    }
+
+    @Test
+    void customerCanDeleteExistingTask() {
+        var currentUser = new User("current-password", "current name", "current.user@gmail.com");
+        userService.register(currentUser);
+        var task = new Task("title", "description");
+        var createdTask = authenticatedUser.createTask(task);
+        authenticatedUser.deleteTask(createdTask.id());
+    }
+
+    @Test
+    void customerCannotDeleteNoExistingTask() {
+        var currentUser = new User("current-password", "current name", "current.user@gmail.com");
+        userService.register(currentUser);
+        assertThatThrownBy(() -> authenticatedUser.deleteTask(1L)).isInstanceOf(TaskNotFound.class);
     }
 }

@@ -8,4 +8,8 @@ public interface Tasks {
     List<Task> findAll();
 
     Task save(Task task);
+
+    Task findById(Long id) throws TaskNotFound;
+
+    void deleteById(Long id);
 }
