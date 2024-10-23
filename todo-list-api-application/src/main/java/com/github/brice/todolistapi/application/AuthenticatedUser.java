@@ -24,4 +24,11 @@ public class AuthenticatedUser implements ManagingTask {
         }
         return tasks.save(new Task(task.title(), task.description(), user.id()));
     }
+
+    @Override
+    public Task updateTask(Long id, Task task) {
+        var user = users.findCurrentUser();
+        var existingTask = tasks.findById(id);
+        return tasks.save(existingTask.update(task));
+    }
 }
