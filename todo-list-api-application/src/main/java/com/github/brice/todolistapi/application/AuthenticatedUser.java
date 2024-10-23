@@ -5,7 +5,6 @@ import com.github.brice.todolistapi.application.in.ManagingTask;
 import com.github.brice.todolistapi.application.out.Tasks;
 import com.github.brice.todolistapi.application.out.Users;
 import com.github.brice.todolistapi.application.task.Task;
-
 import java.util.List;
 
 @UseCase
