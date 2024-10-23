@@ -6,6 +6,8 @@ import com.github.brice.todolistapi.application.out.Tasks;
 import com.github.brice.todolistapi.application.out.Users;
 import com.github.brice.todolistapi.application.task.Task;
 
+import java.util.List;
+
 @UseCase
 public class AuthenticatedUser implements ManagingTask {
     private final Users users;
@@ -36,5 +38,10 @@ public class AuthenticatedUser implements ManagingTask {
     public void deleteTask(Long id) {
         tasks.findById(id);
         tasks.deleteById(id);
+    }
+
+    @Override
+    public List<Task> getAllTasks() {
+        return tasks.findAll();
     }
 }
