@@ -88,4 +88,20 @@ class AcceptanceTest {
         userService.register(currentUser);
         assertThatThrownBy(() -> authenticatedUser.updateTask(1L, new Task("new title", "new description"))).isInstanceOf(TaskNotFound.class);
     }
+
+    @Test
+    void customerCanDeleteExistingTask() {
+        var currentUser = new User("current-password", "current name", "current.user@gmail.com");
+        userService.register(currentUser);
+        var task = new Task("title", "description");
+        var createdTask = authenticatedUser.createTask(task);
+        authenticatedUser.deleteTask(createdTask.id());
+    }
+
+    @Test
+    void customerCannotDeleteNoExistingTask() {
+        var currentUser = new User("current-password", "current name", "current.user@gmail.com");
+        userService.register(currentUser);
+        assertThatThrownBy(() -> authenticatedUser.deleteTask(1L)).isInstanceOf(TaskNotFound.class);
+    }
 }

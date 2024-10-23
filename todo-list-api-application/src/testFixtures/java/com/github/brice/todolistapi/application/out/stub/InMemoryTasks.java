@@ -34,4 +34,9 @@ public class InMemoryTasks implements Tasks {
         }
         return task;
     }
+
+    @Override
+    public void deleteById(Long id) {
+        entities.remove(id);
+    }
 }

@@ -10,4 +10,6 @@ public interface Tasks {
     Task save(Task task);
 
     Task findById(Long id) throws TaskNotFound;
+
+    void deleteById(Long id);
 }

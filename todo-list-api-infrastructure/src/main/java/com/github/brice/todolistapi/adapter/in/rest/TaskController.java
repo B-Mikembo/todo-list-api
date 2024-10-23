@@ -28,4 +28,10 @@ public class TaskController {
         var task = authenticatedUser.updateTask(id, request.toDomain());
         return ResponseEntity.ok(TaskResponse.fromDomain(task));
     }
+
+    @DeleteMapping("/todos/{id}")
+    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
+        authenticatedUser.deleteTask(id);
+        return ResponseEntity.noContent().build();
+    }
 }
