@@ -1,7 +1,6 @@
 package com.github.brice.todolistapi.application.task;
 
 import com.github.brice.todolistapi.application.base.BaseDomain;
-import com.github.brice.todolistapi.application.user.User;
 
 public record Task(
         Long id,
@@ -15,5 +14,9 @@ public record Task(
 
     public Task(String title, String description, Long userId) {
         this(null, title, description, userId);
+    }
+
+    public Task update(Task task) {
+        return new Task(id, task.title(), task.description(), task.userId());
     }
 }

@@ -4,4 +4,6 @@ import com.github.brice.todolistapi.application.task.Task;
 
 public interface ManagingTask {
     Task createTask(Task task);
+
+    Task updateTask(Long id, Task task);
 }
