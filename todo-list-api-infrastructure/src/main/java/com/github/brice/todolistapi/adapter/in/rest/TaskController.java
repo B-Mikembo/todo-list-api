@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 public class TaskController {
     private final ManagingTask authenticatedUser;
@@ -33,5 +35,11 @@ public class TaskController {
     public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
         authenticatedUser.deleteTask(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/todos")
+    public ResponseEntity<List<TaskResponse>> readAllTasks() {
+        var tasks = authenticatedUser.getAllTasks();
+        return ResponseEntity.ok(tasks.stream().map(TaskResponse::fromDomain).toList());
     }
 }
